@@ -9,7 +9,7 @@ from model import Network
 from train import trainer
 dataset = csv_to_dataset(path='data/train.csv')
 
-loader = {x: create_custom_loader(dataset[x], batch_size=4) for x in ['train', 'val']}
+loader = {x: create_custom_loader(dataset[x], batch_size=2) for x in ['train', 'val']}
 
 '''
 img, trg, _ = next(iter(loader['val']))

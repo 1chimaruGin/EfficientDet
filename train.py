@@ -131,7 +131,7 @@ class trainer:
 
             self.optimizer.zero_grad()
             
-            loss, _, _ = self.model(images, boxes, labels)
+            loss, _, _ = self.model(images, {'bbox': boxes, 'cls': labels})
             
             loss.backward()
 
