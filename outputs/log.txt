@@ -1,0 +1,62 @@
+Training Start on cuda
+
+2020-08-21T08:37:32.485109
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T08:50:42.934766
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T08:52:18.477107
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T08:53:33.434064
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T09:05:11.820440
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:16:54.571543
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:17:24.019354
+LR: 0.0002
+Fitter prepared. Device is cuda
+Fitter prepared. Device is cuda
+Fitter prepared. Device is cuda
+
+2020-08-21T09:23:49.228283
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T09:27:10.716496
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:30:21.825827
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:32:24.726549
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:35:21.245636
+LR: 0.0002
+Fitter prepared. Device is cuda
+
+2020-08-21T09:44:18.217177
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T09:45:42.023128
+LR: 0.0002
+Training Start on cuda
+
+2020-08-21T09:55:51.909019
+LR: 0.0002
