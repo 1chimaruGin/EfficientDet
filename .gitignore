@@ -174,4 +174,4 @@ data/train/
 
 *.pth
 
-data/train.csv
+data/*.csv
