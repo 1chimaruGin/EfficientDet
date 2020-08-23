@@ -8,7 +8,7 @@ Special thanks to [Alex Shonenkov](https://www.kaggle.com/shonenkov) for providi
 
 Training EfficientDet is a painful and time-consuming task.
 
-- step 1 -
+### STEP 1 -
 
 ```
 # your dataset structure should be like this
@@ -38,7 +38,7 @@ datasets/
             -instances_val2017.json
 ```
 
-- step 2 -
+### STEP 2-
 
 `python main.py -m train`
 
