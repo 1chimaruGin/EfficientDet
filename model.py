@@ -3,10 +3,10 @@ import torch
 from effdet import get_efficientdet_config, EfficientDet, DetBenchTrain
 from effdet.efficientdet import HeadNet
 
-def Network(conf='efficientdet_d1'):
+def Network(conf='tf_efficientdet_d4'):
     config = get_efficientdet_config(conf)
     model = EfficientDet(config, pretrained_backbone=False)
-    checkpoint = torch.load('efficientdet_d1-bb7e98fe.pth')
+    checkpoint = torch.load('efficientdet_d4-bb7e98fe.pth')
     model.load_state_dict(checkpoint)
     config.num_classes = 1 
     config.image_size = 512
