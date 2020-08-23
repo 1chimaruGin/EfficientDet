@@ -2,7 +2,7 @@
 
 The [EfficientDet](https://github.com/rwightman/efficientdet-pytorch) and [Backbone](https://github.com/rwightman/pytorch-image-models) are from the amazing repo of [rwightman](https://github.com/rwightman). Check his repo to learn more about other amazing architectures.
 
-Special thanks to [Alex Shonenkov](https://www.kaggle.com/shonenkov) for providing great [kernel](https://www.kaggle.com/shonenkov/training-efficientdet)
+Special thanks to [Alex Shonenkov](https://www.kaggle.com/shonenkov) for providing great [kernel](https://www.kaggle.com/shonenkov/training-efficientdet). Don't forget to upvote his work :3.
 
 ## Training
 
