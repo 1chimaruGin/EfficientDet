@@ -31,7 +31,7 @@ class trainer:
         self.config = config
         self.epoch = 1
 
-        self.base_dir = f'./{config.folder}'
+        self.base_dir = f'./{config.FOLDER}'
         if not os.path.exists(self.base_dir):
             os.makedirs(self.base_dir)
 
@@ -49,38 +49,38 @@ class trainer:
             {'params': [param for name, param in _optimizer if any(decay in name for decay in non_decay)], 'weight_decay': 0.0 }
         ]
 
-        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.lr)
-        self.scheduler = config.schedulerClass(self.optimizer, **config.scheduler_params)
-        self.log(f'Training Start on {self.device}')
+        self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.LEARNING_RATE)
+        self.scheduler = config.SCHEDULER_CLASS(self.optimizer, **config.SCHEDULER_PARAMS)
+        self._log(f'Training Start on {self.device}')
 
     
     def fit(self, loader):
-        for epoch in range(1, self.config.n_epochs):
-            if self.config.verbose:
+        for epoch in range(1, self.config.EPOCHS):
+            if self.config.VERBOSE:
                 lr = self.optimizer.param_groups[0]['lr']
                 timestamp = datetime.utcnow().isoformat()
-                self.log(f'\n{timestamp}\nLR: {lr}')
+                self._log(f'\n{timestamp}\nLR: {lr}')
 
             t = time.time()
             summary_loss = self._train_one_epoch(loader['train'])
 
-            self.log(f'[RESULT]: Train. Epoch: {self.epoch}, summary_loss: {summary_loss.avg:.5f}, time: {(time.time() - t):.5f}')
-            self.save(f'{self.base_dir}/last-checkpoint.pth')
+            self._log(f'[RESULT]: Train. Epoch: {self.epoch}, summary_loss: {summary_loss.avg:.5f}, time: {(time.time() - t):.5f}')
+            self._save(f'{self.base_dir}/last-checkpoint.pth')
 
             t = time.time()
 
             summary_loss = self._validation(loader['val'])
 
-            self.log(f'[RESULT]: Val. Epoch: {self.epoch}, summary_loss: {summary_loss.avg:.5f}, time: {(time.time() - t):.5f}')
+            self._log(f'[RESULT]: Val. Epoch: {self.epoch}, summary_loss: {summary_loss.avg:.5f}, time: {(time.time() - t):.5f}')
 
             if summary_loss.avg < self.best_summary_loss:
                 self.best_summary_loss = summary_loss.avg
                 self.model.eval()
-                self.save(f'{self.base_dir}/best-checkpoint-{str(self.epoch).zfill(3)}epoch.bin')
+                self._save(f'{self.base_dir}/best-checkpoint-{str(self.epoch).zfill(3)}epoch.bin')
                 for path in sorted(glob(f'{self.base_dir}/best-checkpoint-*epoch.pth'))[:-3]:
                     os.remove(path)
 
-            if self.config.validation_scheduler:
+            if self.config.VALIDATION_SCHEDULER:
                 self.scheduler.step(metrics=summary_loss.avg)
 
             self.epoch += 1
@@ -90,8 +90,8 @@ class trainer:
         summary_loss = AverageMeter()
         t = time.time()
         for step, (images, targets, image_ids) in enumerate(val_loader):
-            if self.config.verbose:
-                if step % self.config.verbose_step == 0:
+            if self.config.VERBOSE:
+                if step % self.config.VERBOSE_STEP == 0:
                     print(
                         f'Val Step {step}/{len(val_loader)}, ' + \
                         f'summary_loss: {summary_loss.avg:.5f}, ' + \
@@ -103,8 +103,11 @@ class trainer:
                 images = images.to(self.device).float()
                 boxes = [target['boxes'].to(self.device).float() for target in targets]
                 labels = [target['labels'].to(self.device).float() for target in targets]
+                img_scale = torch.tensor([1.0] * batch_size, dtype=torch.float).to(self.device)
+                img_size = torch.tensor([images[0].shape[-2:]] * batch_size, dtype=torch.float).to(self.device)
 
-                loss, _, _ = self.model(images, boxes, labels)
+                output = self.model(images, {'bbox': boxes, 'cls': labels, 'image_scale': image_scale, 'img_size': img_size})
+                loss = output['loss']
                 summary_loss.update(loss.detach().item(), batch_size)
 
         return summary_loss
@@ -115,8 +118,8 @@ class trainer:
         summary_loss = AverageMeter()
         t = time.time()
         for step, (images, targets, image_ids) in enumerate(train_loader):
-            if self.config.verbose:
-                if step % self.config.verbose_step == 0:
+            if self.config.VERBOSE:
+                if step % self.config.VERBOSE_STEP == 0:
                     print(
                         f'Train Step {step}/{len(train_loader)}, ' + \
                         f'summary_loss: {summary_loss.avg:.5f}, ' + \
@@ -131,20 +134,20 @@ class trainer:
 
             self.optimizer.zero_grad()
             
-            loss, _, _ = self.model(images, {'bbox': boxes, 'cls': labels})
-            
+            output = self.model(images, {'bbox': boxes, 'cls': labels})
+            loss = output['loss']
             loss.backward()
 
             summary_loss.update(loss.detach().item(), batch_size)
 
             self.optimizer.step()
 
-            if self.config.step_scheduler:
+            if self.config.STEP_SCHEDULER:
                 self.scheduler.step()
 
         return summary_loss
     
-    def save(self, path):
+    def _save(self, path):
         self.model.eval()
         torch.save({
             'model_state_dict': self.model.model.state_dict(),
@@ -162,8 +165,8 @@ class trainer:
         self.best_summary_loss = checkpoint['best_summary_loss']
         self.epoch = checkpoint['epoch'] + 1
         
-    def log(self, message):
-        if self.config.verbose:
+    def _log(self, message):
+        if self.config.VERBOSE:
             print(message)
         with open(self.log_file, 'a+') as logger:
             logger.write(f'{message}\n')
