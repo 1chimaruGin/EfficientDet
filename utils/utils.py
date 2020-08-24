@@ -1,12 +1,21 @@
 import cv2
 import torch
+import numpy
+import numpy as np
 import matplotlib.pyplot as plt
+import albumentations as A 
+from ensemble_boxes import weighted_boxes_fusion
+from albumentations.pytorch.transforms import ToTensorV2
+
+transform = A.Compose([
+            A.Resize(height=512, width=512, p=1.0),
+            ToTensorV2(p=1.0),
+        ], p=1.0)
 
 def _make_predictions(model, images, score_threshold=0.22):
-    images = torch.stack(images).cuda().float()
     predictions = []
     with torch.no_grad():
-        det = model(images, torch.tensor([1]*images.shape[0]).float().cuda())
+        det = model(images, torch.tensor([1]*images.shape[0]).float().cuda(), torch.tensor([images[0].shape[-2:]]).float().cuda())
         for i in range(images.shape[0]):
             boxes = det[i].detach().cpu().numpy()[:,:4]    
             scores = det[i].detach().cpu().numpy()[:,4]
@@ -28,13 +37,17 @@ def _run_wbf(predictions, image_index, image_size=512, iou_thr=0.44, skip_box_th
     boxes = boxes*(image_size-1)
     return boxes, scores, labels
 
-def plot_bbox(image: str):
-
-    images = cv2.imread(images).unsqueeze(0)
-    predictions = _make_predictions(images)
+def plot_bbox(model, image: str):
+    image = cv2.imread(image, cv2.IMREAD_COLOR)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(numpy.float32)
+    image /= 255
+    sample = {'image': image}
+    image = transform(**sample)['image']
+    image = image.cuda()
+    predictions = _make_predictions(model, image.unsqueeze(0))
 
     i = 0
-    sample = images[i].permute(1,2,0).cpu().numpy()
+    sample = image.permute(1,2,0).cpu().numpy()
 
     boxes, scores, labels = _run_wbf(predictions, image_index=i)
     boxes = boxes.astype(np.int32).clip(min=0, max=511)
@@ -46,5 +59,6 @@ def plot_bbox(image: str):
     
     ax.set_axis_off()
     ax.imshow(sample)
+    plt.waitforbuttonpress()
 
 
