@@ -33,7 +33,7 @@ def csv_to_dataset(path=None, split=5):
     fold_number = 0
 
     train_dataset = Custom_Dataset(
-        root= 'data/train',
+        root= path,
         image_ids=fold_data[fold_data['fold'] != fold_number].index.values,
         data=data,
         transform=get_train_transforms(),
@@ -41,7 +41,7 @@ def csv_to_dataset(path=None, split=5):
     )
 
     validation_dataset = Custom_Dataset(
-        root='data/train',
+        root= path,
         image_ids=fold_data[fold_data['fold'] == fold_number].index.values,
         data=data,
         transform=get_valid_transforms(),
