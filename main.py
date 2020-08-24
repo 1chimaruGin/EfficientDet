@@ -18,7 +18,9 @@ parser = argparse.ArgumentParser(description='EfficientDet')
 parser.add_argument('-m', '--mode', default='train', type=str, help='Mode')
 parser.add_argument('-p', '--path', default='data/train', type=str, help='Path to dataset')
 parser.add_argument('-im', '--image', type=str, help='Image path')
-parser.add_argument('-coef', '--coef', type=int, help='EfficientDet ')
+parser.add_argument('-coef', '--coef', default=1, type=int, help='EfficientDet')
+parser.add_argument('-w', '--load-weights', default='efficientdet_d4-5b370b7a.pth', type=str, help='load weights')
+parser.add_argument('-r', '--resume', action='store_true', help='Resume training')
 
 args = parser.parse_args()
 
@@ -26,7 +28,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     if args.mode == 'train':
-        model = Network(conf=f'tf_efficientdet_d{args.coef}', ckpt='efficientdet_d4-5b370b7a.pth')
+        model = Network(conf=f'tf_efficientdet_d{args.coef}', ckpt=args.load_weights)
         model.to(device)
         config = TrainGlobalConfig()
 
@@ -35,11 +37,11 @@ if __name__ == '__main__':
         loader = {x: create_custom_loader(dataset[x], batch_size=config.BATCH_SIZE, 
                 num_workers=config.NUM_WORKERS) for x in ['train', 'val']}
 
-        trainer = trainer(model, device=device, config=config)
+        trainer = trainer(model, device=device, config=config, resume=args.resume)
         trainer.fit(loader)
 
     elif args.mode == 'predict':
-        model = Inference(conf=f'tf_efficientdet_d{args.coef}', ckpt='outputs/best-checkpoint-039epoch.bin')
+        model = Inference(conf=f'tf_efficientdet_d{args.coef}', ckpt=args.load_weights)
         model.to(device)
         plot_bbox(model.eval(), image='data/test/2fd875eaa.jpg')       
 
