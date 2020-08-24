@@ -3,6 +3,7 @@ import torch
 import warnings
 import logging
 import time
+from glob import glob
 from datetime import datetime
 
 warnings.filterwarnings('ignore')
@@ -27,10 +28,10 @@ class AverageMeter(object):
 
 class trainer:
 
-    def __init__(self, model, device, config):
+    def __init__(self, model, device, config, load_weights=True):
         self.config = config
         self.epoch = 1
-
+        
         self.base_dir = f'./{config.FOLDER}'
         if not os.path.exists(self.base_dir):
             os.makedirs(self.base_dir)
@@ -51,6 +52,10 @@ class trainer:
 
         self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.LEARNING_RATE)
         self.scheduler = config.SCHEDULER_CLASS(self.optimizer, **config.SCHEDULER_PARAMS)
+
+        if load_weights:
+          self._load(path='outputs/last-checkpoint.pth')
+
         self._log(f'Training Start on {self.device}')
 
     
@@ -76,7 +81,7 @@ class trainer:
             if summary_loss.avg < self.best_summary_loss:
                 self.best_summary_loss = summary_loss.avg
                 self.model.eval()
-                self._save(f'{self.base_dir}/best-checkpoint-{str(self.epoch).zfill(3)}epoch.bin')
+                self._save(f'{self.base_dir}/best-checkpoint-epoch{str(self.epoch).zfill(3)}.pth.tar')
                 for path in sorted(glob(f'{self.base_dir}/best-checkpoint-*epoch.pth'))[:-3]:
                     os.remove(path)
 
@@ -106,7 +111,7 @@ class trainer:
                 img_scale = torch.tensor([1.0] * batch_size, dtype=torch.float).to(self.device)
                 img_size = torch.tensor([images[0].shape[-2:]] * batch_size, dtype=torch.float).to(self.device)
 
-                output = self.model(images, {'bbox': boxes, 'cls': labels, 'image_scale': image_scale, 'img_size': img_size})
+                output = self.model(images, {'bbox': boxes, 'cls': labels, 'img_scale': img_scale, 'img_size': img_size})
                 loss = output['loss']
                 summary_loss.update(loss.detach().item(), batch_size)
 
@@ -157,7 +162,7 @@ class trainer:
             'epoch': self.epoch,
         }, path)
 
-    def load(self, path):
+    def _load(self, path):
         checkpoint = torch.load(path)
         self.model.model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
