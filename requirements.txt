@@ -1,0 +1,5 @@
+omegaconf
+albumentations==0.4.6
+pyyaml
+opencv-python
+ensemble-boxes
