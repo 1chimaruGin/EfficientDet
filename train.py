@@ -28,7 +28,7 @@ class AverageMeter(object):
 
 class trainer:
 
-    def __init__(self, model, device, config, load_weights=True):
+    def __init__(self, model, device, config, resume):
         self.config = config
         self.epoch = 1
         
@@ -53,7 +53,7 @@ class trainer:
         self.optimizer = torch.optim.AdamW(self.model.parameters(), lr=config.LEARNING_RATE)
         self.scheduler = config.SCHEDULER_CLASS(self.optimizer, **config.SCHEDULER_PARAMS)
 
-        if load_weights:
+        if resume:
           self._load(path='outputs/last-checkpoint.pth')
 
         self._log(f'Training Start on {self.device}')
