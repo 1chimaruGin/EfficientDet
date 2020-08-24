@@ -3,7 +3,7 @@ import torch
 from effdet import get_efficientdet_config, EfficientDet, DetBenchTrain, DetBenchPredict
 from effdet.efficientdet import HeadNet
 
-def Network(conf='tf_efficientdet_d4', ckpt='efficientdet_d4-bb7e98fe.pth'):
+def Network(conf, ckpt):
     config = get_efficientdet_config(conf)
     model = EfficientDet(config, pretrained_backbone=False)
     checkpoint = torch.load(ckpt)
@@ -15,7 +15,7 @@ def Network(conf='tf_efficientdet_d4', ckpt='efficientdet_d4-bb7e98fe.pth'):
     return DetBenchTrain(model, config)
 
 
-def Inference(conf='tf_efficientdet_d4', ckpt='outputs/last-checkpoint.pth'):
+def Inference(conf, ckpt):
     config = get_efficientdet_config(conf)
     model = EfficientDet(config, pretrained_backbone=False)
 
