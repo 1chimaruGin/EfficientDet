@@ -9,7 +9,7 @@ from data.transforms import get_train_transforms, get_valid_transforms
 
 
 def csv_to_dataset(path=None, split=5):
-    data = pd.read_csv(path)
+    data = pd.read_csv(path+'.csv')
     bbox = np.stack(data.bbox.apply(lambda x: np.fromstring(x[1:-1], sep=',')))
     for i, column in enumerate(['x', 'y', 'w', 'h']):
         data[column] = bbox[:, i]
