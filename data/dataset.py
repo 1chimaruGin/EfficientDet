@@ -198,8 +198,10 @@ class Custom_Dataset(data.Dataset):
     def __getitem__(self, index: int):
         image_id = self.image_ids[index]
 
-        if self.test or random.random() > 0.5:
+        if self.test or random.random() > 0.35:
             image, boxes = self._load_data(index)
+        elif random.random() > 0.5:
+            image, boxes = self._load_cutmix_data(index)
         else:
             image, boxes = self._load_cutmix_data(index)
 
