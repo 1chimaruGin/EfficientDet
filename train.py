@@ -31,6 +31,7 @@ class trainer:
     def __init__(self, model, device, config, resume):
         self.config = config
         self.epoch = 1
+        print(config.FOLDER)
         
         self.base_dir = f'./{config.FOLDER}'
         if not os.path.exists(self.base_dir):
@@ -39,7 +40,7 @@ class trainer:
         self.log_file = f'{self.base_dir}/log.txt'
         self.best_summary_loss = 10**5
 
-        self.model =model
+        self.model = model
         self.device = device
 
         _optimizer = list(self.model.named_parameters())
