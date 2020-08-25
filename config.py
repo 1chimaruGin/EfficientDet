@@ -8,7 +8,7 @@ class TrainGlobalConfig:
 
     EPOCHS = 40 
 
-    LEARNING_RATE = 0.0002
+    LEARNING_RATE = 0.0003
 
     FOLDER = 'outputs'
 
