@@ -84,3 +84,7 @@ Training Start on cuda
 
 2020-08-21T10:29:42.215172
 LR: 0.0002
+Training Start on cuda
+
+2020-08-24T10:48:07.390472
+LR: 0.0002

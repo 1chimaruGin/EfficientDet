@@ -175,3 +175,5 @@ data/train/
 *.pth
 
 data/*.csv
+
+*.bin
