@@ -21,6 +21,7 @@ parser.add_argument('-im', '--image', type=str, help='Image path')
 parser.add_argument('-coef', '--coef', default=1, type=int, help='EfficientDet')
 parser.add_argument('-w', '--load-weights', default='efficientdet_d4-5b370b7a.pth', type=str, help='load weights')
 parser.add_argument('-r', '--resume', action='store_true', help='Resume training')
+parser.add_argument('-out', '--output', type=str, default='outputs', help='Output directory')
 
 args = parser.parse_args()
 
@@ -31,6 +32,7 @@ if __name__ == '__main__':
         model = Network(conf=f'tf_efficientdet_d{args.coef}', ckpt=args.load_weights)
         model.to(device)
         config = TrainGlobalConfig()
+        config.FOLDER = args.output
 
         dataset = csv_to_dataset(path=args.path)
 
