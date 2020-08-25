@@ -31,7 +31,6 @@ class trainer:
     def __init__(self, model, device, config, resume):
         self.config = config
         self.epoch = 1
-        print(config.FOLDER)
         
         self.base_dir = f'./{config.FOLDER}'
         if not os.path.exists(self.base_dir):

@@ -9,7 +9,7 @@ def Network(conf, ckpt):
     checkpoint = torch.load(ckpt)
     model.load_state_dict(checkpoint)
     config.num_classes = 1 
-    config.image_size = 1024
+    config.image_size = 640
     model.class_net = HeadNet(config, num_outputs=config.num_classes, norm_kwargs=dict(eps=.001,
         momentum=.01))
     return DetBenchTrain(model, config)
@@ -20,7 +20,7 @@ def Inference(conf, ckpt):
     model = EfficientDet(config, pretrained_backbone=False)
 
     config.num_classes = 1 
-    config.image_size = 1024
+    config.image_size = 640
     model.class_net = HeadNet(config, num_outputs=config.num_classes, norm_kwargs=dict(eps=.001,
         momentum=.01))
 

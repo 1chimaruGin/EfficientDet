@@ -278,8 +278,8 @@ def transforms_coco_train(
 
 
 def get_train_transforms():
-    return A.Compose( [ A.RandomSizedCrop(min_max_height=(800, 1024), 
-                        height=1024, width=1024, p=0.5), 
+    return A.Compose( [ A.RandomSizedCrop(min_max_height=(512, 1024), 
+                        height=640, width=640, p=0.5), 
                         A.OneOf([ 
                             A.HueSaturationValue(hue_shift_limit=0.2, sat_shift_limit= 0.2, val_shift_limit=0.2, p=0.9), 
                             A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.9), ],p=0.9), 
@@ -290,9 +290,8 @@ def get_train_transforms():
                         A.Transpose(p=0.5), 
                         A.JpegCompression(quality_lower=85, quality_upper=95, p=0.2), 
                         A.OneOf([ 
-                            A.Blur(blur_limit=3, p=1.0), 
-                            A.MedianBlur(blur_limit=3, p=1.0) ],p=0.1), 
-                        A.Resize(height=1024, width=1024, p=1), 
+                            A.Blur(blur_limit=3, p=1.0), A.MedianBlur(blur_limit=3, p=1.0) ],p=0.1), 
+                        A.Resize(height=640, width=640, p=1), 
                         A.Cutout(num_holes=8, max_h_size=64, max_w_size=64, fill_value=0, p=0.5), 
                         ToTensorV2(p=1.0), ], 
                         p=1.0, 
@@ -302,7 +301,7 @@ def get_train_transforms():
 def get_valid_transforms():
     return A.Compose(
         [
-            A.Resize(height=1024, width=1024, p=1.0),
+            A.Resize(height=640, width=640, p=1.0),
             ToTensorV2(p=1.0),
         ], 
         p=1.0, 

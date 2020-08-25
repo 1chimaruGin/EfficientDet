@@ -16,6 +16,8 @@ from utils import plot_bbox
 parser = argparse.ArgumentParser(description='EfficientDet')
 
 parser.add_argument('-m', '--mode', default='train', type=str, help='Mode')
+parser.add_argument('-b', '--batch-size', default=4, type=int, help='Batch Size')
+parser.add_argument('-nwk', '--num-workers', default=2, type=int, help='Num workers')
 parser.add_argument('-p', '--path', default='data/train', type=str, help='Path to dataset')
 parser.add_argument('-im', '--image', type=str, help='Image path')
 parser.add_argument('-coef', '--coef', default=1, type=int, help='EfficientDet')
@@ -33,6 +35,8 @@ if __name__ == '__main__':
         model.to(device)
         config = TrainGlobalConfig()
         config.FOLDER = args.output
+        config.BATCH_SIZE = args.batch_size
+        config.NUM_WORKERS = args.num_workers
 
         dataset = csv_to_dataset(path=args.path)
 
