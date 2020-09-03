@@ -31,4 +31,3 @@ def Inference(conf, ckpt):
     return model
 
 
-print(Network('tf_efficientdet_d5', 'tf_efficientdet_d5-ef44aea8.pth'))
