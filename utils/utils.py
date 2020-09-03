@@ -29,7 +29,7 @@ def _make_predictions(model, images, score_threshold=0.22):
             })
     return [predictions]
 
-def _run_wbf(predictions, image_index, image_size=512, iou_thr=0.44, skip_box_thr=0.43, weights=None):
+def _run_wbf(predictions, image_index, image_size=512, iou_thr=0.6, skip_box_thr=0.43, weights=None):
     boxes = [(prediction[image_index]['boxes']/(image_size-1)).tolist()  for prediction in predictions]
     scores = [prediction[image_index]['scores'].tolist()  for prediction in predictions]
     labels = [np.ones(prediction[image_index]['scores'].shape[0]).tolist() for prediction in predictions]

@@ -29,3 +29,6 @@ def Inference(conf, ckpt):
 
     model = DetBenchPredict(model, config).eval()
     return model
+
+
+print(Network('tf_efficientdet_d5', 'tf_efficientdet_d5-ef44aea8.pth'))

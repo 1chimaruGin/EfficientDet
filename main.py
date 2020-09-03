@@ -47,7 +47,7 @@ if __name__ == '__main__':
         trainer.fit(loader)
 
     elif args.mode == 'predict':
-        model = Inference(conf=f'tf_efficientdet_d{args.coef}', ckpt=args.load_weights)
+        model = Inference(conf=f'tf_efficientdet_d{args.coef}', ckpt='outputs/best-checkpoint-039epoch.bin')
         model.to(device)
         plot_bbox(model.eval(), image='data/test/2fd875eaa.jpg')       
 
